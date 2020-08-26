@@ -144,8 +144,8 @@ public class Game {
 	public void step() {
 		System.out.println("\nVoulez-vous déclarer un alea ?");
 		String input = expectBoundedInteger("\t1/ Oui\t2/ Non\n", 0, 2);
-		
-		if (input == "1") {
+
+		if (input.equals("1")) {
 			declareEvent();
 		}
 		
@@ -159,7 +159,45 @@ public class Game {
 	}
 	
 	public void declareEvent() {
+		System.out.println("\nQui sera impacté ?");
+		String message = "\t0/ Tous\t\t";
 		
+		int count = 1;
+		for (Empire empire : empires) {
+			String entry = "\n(" + empire.getName() + "|" + empire.getPlayerName() +")\n";
+			for (Planet planet : empire.getPlanets()) {
+				message += count + "/ " + planet.getName() + "\t";
+				count++;
+			}
+			message = entry + message + "\n";
+		}
+		String targetInput = expectBoundedInteger(message, 0, count);
+		
+		String statInput = "";
+		while (!statInput.equals("0")) {
+			System.out.println("\nChoisir la statistique à modifier : ");
+			message = "\t0/ Fin\t\t";
+			message += "1/ Population\t";
+			message += "2/ Indice de révolte\t";
+			message += "3/ Indice de fertilité\t";
+			message += "4/ Niveau de ferme\t\t\n\t";
+			message += "5/ Niveau d'industrie\t";
+			message += "6/ Richesse minérale\t";
+			message += "7/ Niveau de caserne\t";
+			message += "8/ Nourriture bonus\t\n";
+			statInput = expectBoundedInteger(message, 0, 8);
+			
+			String operandInput = "";
+			String diffInput = "0";
+			if (!statInput.equals("0")) {
+				System.out.println("\nSouhaitez-vous augmenter ou diminuer la valeur ?");
+				message = "\t1/ Augmenter \t2 Diminuer";
+				operandInput = expectBoundedInteger(message, 1, 2);
+				diffInput = expectBoundedInteger("\nDe combien ?", 0, 100000);
+			}
+			
+			evaluateUserInputs(targetInput, statInput, operandInput, diffInput, getPlanetFromIndex(Integer.parseInt(targetInput)));
+		}
 	}
 	
 	public String expectBoundedInteger(String message, int lowerBound, int higherBound) {
@@ -170,6 +208,117 @@ public class Game {
 		}
 		
 		return input;
+	}
+	
+	public void evaluateUserInputs(String target, String stat, String operand, String diff, Planet currentPlanet) {
+		if (target.equals("0")) {
+			for (Empire empire : empires) {
+				for (Planet planet : empire.getPlanets()) {
+					switch (stat) {
+					case "1":
+						int newPop = evaluateAddition(planet.getPopulation(), operand, diff);
+						planet.setPopulation(newPop);
+						break;
+					case "2":
+						int newUnrest = evaluateAddition(planet.getUnrest(), operand, diff);
+						planet.setUnrest(newUnrest);
+						break;
+					case "3":
+						int newFertility = evaluateAddition(planet.getFertility(), operand, diff);
+						planet.setFertility(newFertility);
+						break;
+					case "4":
+						int newFarm = evaluateAddition(planet.getFarmLevel(), operand, diff);
+						planet.setFarmLevel(newFarm);
+						break;
+					case "5":
+						int newIndustry = evaluateAddition(planet.getIndustryLevel(), operand, diff);
+						planet.setIndustryLevel(newIndustry);
+						break;
+					case "6":
+						int newMineral = evaluateAddition(planet.getMineralWealth(), operand, diff);
+						planet.setMineralWealth(newMineral);
+						break;
+					case "7":
+						int newBarrack = evaluateAddition(planet.getBarrackLevel(), operand, diff);
+						planet.setBarrackLevel(newBarrack);
+						break;
+					case "8":
+						int newFoodBonus = evaluateAddition(planet.getExtraFood(), operand, diff);
+						planet.setExtraFood(newFoodBonus);
+						break;
+					default:
+						break;
+					}
+				}
+			}
+		} else {
+			Planet planet = currentPlanet;
+			switch (stat) {
+			case "1":
+				int newPop = evaluateAddition(planet.getPopulation(), operand, diff);
+				planet.setPopulation(newPop);
+				break;
+			case "2":
+				int newUnrest = evaluateAddition(planet.getUnrest(), operand, diff);
+				planet.setUnrest(newUnrest);
+				break;
+			case "3":
+				int newFertility = evaluateAddition(planet.getFertility(), operand, diff);
+				planet.setFertility(newFertility);
+				break;
+			case "4":
+				int newFarm = evaluateAddition(planet.getFarmLevel(), operand, diff);
+				planet.setFarmLevel(newFarm);
+				break;
+			case "5":
+				int newIndustry = evaluateAddition(planet.getIndustryLevel(), operand, diff);
+				planet.setIndustryLevel(newIndustry);
+				break;
+			case "6":
+				int newMineral = evaluateAddition(planet.getMineralWealth(), operand, diff);
+				planet.setMineralWealth(newMineral);
+				break;
+			case "7":
+				int newBarrack = evaluateAddition(planet.getBarrackLevel(), operand, diff);
+				planet.setBarrackLevel(newBarrack);
+				break;
+			case "8":
+				int newFoodBonus = evaluateAddition(planet.getExtraFood(), operand, diff);
+				planet.setExtraFood(newFoodBonus);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	
+	public int evaluateAddition(int stat, String operand, String diff) {
+		if (operand.equals("1")) {
+			return stat + Integer.parseInt(diff);
+		} else if (operand.equals("2")) {
+			return stat - Integer.parseInt(diff);
+		} else {
+			return stat;
+		}
+	}
+	
+	public Planet getPlanetFromIndex(int index) {
+		int count = 0;
+		Planet needle = null;
+		
+		for (Empire empire : empires) {
+			for (Planet planet : empire.getPlanets()) {
+				count++;
+				needle = planet;
+				
+				if (count == index) {
+					return needle;
+				}
+			}
+		}
+		
+		return needle;
 	}
 	
 	public static boolean isInteger(String s) {
