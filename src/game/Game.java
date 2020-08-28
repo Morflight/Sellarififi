@@ -147,6 +147,8 @@ public class Game {
 
 		if (input.equals("1")) {
 			declareEvent();
+			
+			step();
 		}
 		
 		System.out.println("Le tour passe");
@@ -160,16 +162,16 @@ public class Game {
 	
 	public void declareEvent() {
 		System.out.println("\nQui sera impacté ?");
-		String message = "\t0/ Tous\t\t";
+		String message = "0/ Tous\t\t";
 		
 		int count = 1;
 		for (Empire empire : empires) {
-			String entry = "\n(" + empire.getName() + "|" + empire.getPlayerName() +")\n";
+			message += "\n(" + empire.getName() + "|" + empire.getPlayerName() +")\n";
 			for (Planet planet : empire.getPlanets()) {
 				message += count + "/ " + planet.getName() + "\t";
 				count++;
 			}
-			message = entry + message + "\n";
+			message += "\n";
 		}
 		String targetInput = expectBoundedInteger(message, 0, count);
 		
