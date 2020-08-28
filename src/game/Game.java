@@ -149,6 +149,7 @@ public class Game {
 			declareEvent();
 			
 			step();
+			return;
 		}
 		
 		System.out.println("Le tour passe");
