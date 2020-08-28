@@ -160,7 +160,7 @@ public class Planet {
 	}
 	
 	public int getMineralProd() {
-		return (int)(((3 + mineralBonus * 3) * industryLevel) * (isProsperous() ? 0.5 : 1));
+		return (int)(((3 + mineralBonus * 3) * industryLevel) * (isProsperous() ? 0.5 : 1) * (1 - unrest * 0.2));
 	}
 	
 	public int getMilitia() {
